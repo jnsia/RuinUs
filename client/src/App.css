@@ -1,0 +1,52 @@
+* {
+  font-family: 'HiMelody';
+  /* font-weight: bold; */
+}
+
+@font-face {
+  font-family: 'HiMelody';
+  src: url(../src/fonts/HiMelody-Regular.ttf);
+}
+
+.App {
+  margin: 0 auto;
+  height: 100%;
+  height: 100vh;
+}
+
+#writeRegion {
+  background-image: url('./image/page.png');
+}
+
+#writeRegion div,
+#writeRegion input,
+#writeRegion textarea {
+  background: none;
+  border: none;
+}
+
+#writeRegion textarea {
+  min-height: 60vh;
+}
+
+#sort-btns,
+#cause-btns,
+#reserve-btns {
+  pointer-events: none;
+}
+
+#sort-btns > button,
+#cause-btns > button,
+#reserve-btns > button {
+  pointer-events: all;
+}
+
+.datepicker {
+  text-align: center;
+  display: flex;
+  width: 100%;
+  text-align: center;
+  /* border: none; */
+  background-color: lightgrey;
+  margin: 0.5rem 0;
+}
