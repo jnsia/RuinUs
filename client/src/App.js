@@ -1,6 +1,6 @@
 import './App.css';
-import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Signin from './Views/Signin';
 import Home from './Views/Home';
 import Write from './Views/Write';
@@ -10,7 +10,15 @@ import Post from './Views/Post';
 import Signup from './Views/Signup';
 
 function App() {
-  const token = localStorage.getItem('@isLogin');
+  const [token, setToken] = useState(localStorage.getItem("@isLogin"))
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("@isLogin")
+
+    if (storedToken !== token) {
+      setToken(storedToken)
+    }
+  }, [token])
 
   return (
     <BrowserRouter>

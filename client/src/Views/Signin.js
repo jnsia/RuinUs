@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -33,7 +33,7 @@ function Signin() {
       .then((res) => {
         if (res.status === 200) {
           localStorage.setItem('@isLogin', res.data);
-          document.location.href = '/';
+          window.location.reload();
         }
       });
   }

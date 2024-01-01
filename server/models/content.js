@@ -36,7 +36,7 @@ module.exports = class Content extends Sequelize.Model {
         underscored: false,
         paranoid: true,
         modelName: 'Content',
-        tableName: 'Contents',
+        tableName: 'contents',
         charset: 'utf8',
         collate: 'utf8_general_ci',
       }

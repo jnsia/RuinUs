@@ -3,8 +3,8 @@ import Modal from 'react-bootstrap/Modal';
 
 function Setting(props) {
   function logout() {
-    document.location.href = '/';
     localStorage.clear('@isLogin');
+    window.location.reload();
   }
 
   return (

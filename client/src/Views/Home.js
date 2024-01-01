@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Title from '../Components/Title';
 import Setting from './setting';
-import testDB from './testDB.json';
+import axios from 'axios';
 
 function Home() {
-  const [modalShow, setModalShow] = React.useState(false);
+  const [modalShow, setModalShow] = useState(false);
+  const [data, setData] = useState([]);
 
   function goWrite() {
     document.location.href = `/Write`;
   }
+
+  useEffect(() => {
+    async function fetchData() { 
+      const token = localStorage.getItem("@isLogin")
+      const res = await axios.get(`http://localhost:8080/home/${token}`)
+    
+      setData(res.data)
+      console.log(res.data)
+    }
+
+    fetchData()
+  }, [])
 
   return (
     <div>
@@ -30,9 +43,10 @@ function Home() {
       <div class="container">
         <div class="row justify-content-center">
           <div class="bg-dark col-lg-8 col-md-10 col-sm-12">
-            {testDB.contents.map((contents, index) => (
+            {data.map((contents, index) => (
               <Title key={index} title={contents.title} tag={contents.tag} time={contents.time} />
             ))}
+            {data.length === 0 && (<p className='text-white'>없어요</p>)}
           </div>
         </div>
       </div>

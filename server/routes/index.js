@@ -1,27 +1,27 @@
 const express = require('express');
-const path = require('path');
 const User = require('../models/user');
 const Content = require('../models/content');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
-router.use((req, res, next) => {
-  next();
-});
+router.get('/home/:encodeToken', async (req, res) => {
+  const encodeToken = req.params.encodeToken
+  const { id, iat } = jwt.verify(encodeToken, 'jwt-secret-key')
 
-router.get('/home', (req, res) => {
-  console.log(req.sessionID);
-});
-
-router.get('/', async (req, res, next) => {
   try {
     const posts = await Content.findAll({
       include: {
         model: User,
-        attributes: ['userID'],
+        attributes: ['id'],
+      },
+      where: {
+        writer: id
       },
       order: [['createdAt', 'DESC']],
     });
+
+    res.status(200).send(posts)
   } catch (err) {
     console.error(err);
     next(err);

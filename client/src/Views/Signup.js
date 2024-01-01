@@ -11,21 +11,21 @@ function Signup() {
 
   function checkInfo() {
     // 아이디 입력 유무 체크
-    if (userID.value == '') {
+    if (userID == '') {
       alert('아이디를 입력하시오');
 
       return false;
     }
 
     // 암호 입력 유무 체크
-    if (userPW.value == '') {
+    if (userPW == '') {
       alert('암호를 입력하세요.');
 
       return false;
     }
 
     // 암호 입력 유무 체크
-    if (email.value == '') {
+    if (email == '') {
       alert('이메일를 입력하세요.');
 
       return false;

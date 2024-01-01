@@ -1,25 +1,25 @@
-const express = require('express');
-const { User, Content } = require('../models');
+const express = require("express");
+const { User, Content } = require("../models");
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
+  return "content";
+});
 
-})
-
-router.get('/sort', async (req, res, next) => {
-      try {
+router.get("/sort", async (req, res, next) => {
+  try {
     const content = await Content.findAll({
       include: {
         model: User,
-        attributes: ['id', 'nickname'],
+        attributes: ["id", "nickname"],
       },
-      order: [['createdAt', 'DESC']],
+      order: [["createdAt", "DESC"]],
     });
   } catch (err) {
     console.error(err);
     next(err);
   }
-})
+});
 
 module.exports = router;

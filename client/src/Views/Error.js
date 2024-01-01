@@ -2,7 +2,7 @@ import React from 'react';
 
 function Error() {
   function GoHome() {
-    document.location.href = '/home';
+    document.location.href = '/';
   }
 
   return (
