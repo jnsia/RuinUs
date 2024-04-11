@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon index"
+    "start": "nodemon index",
+    "deploy": "node index --production"
   },
   "author": "jnsia",
   "license": "ISC",
