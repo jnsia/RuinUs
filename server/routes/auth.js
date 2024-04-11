@@ -14,7 +14,7 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
     const exUser = await User.findOne({ where: { userID } });
 
     if (exUser) {
-      return res.status(400).json({ message: info.reason });
+      return res.status(400).json({ message: "가입한 이메일입니다." });
     }
 
     const hash = await bcrypt.hash(userPW, 12);
@@ -27,7 +27,6 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
 
     return res.json(req.body);
   } catch (error) {
-    console.error(error);
     return next(error);
   }
 });
@@ -35,23 +34,21 @@ router.post('/signup', isNotLoggedIn, async (req, res, next) => {
 router.post('/login', isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (authError, user, info) => {
     if (authError) {
-      console.error(authError);
-      return next(authError);
+      return next(info);
     }
 
     if (!user) {
-      return res.status(400).json({ message: info.message });
+      return res.status(401).send(info.message || 'Authentication failed');
     }
 
-    return req.login(user, (loginError) => {
+    req.login(user, (loginError) => {
       if (loginError) {
-        res.send(loginError);
         return next(loginError);
       }
 
       const token = jwt.sign({ id: user.id }, 'jwt-secret-key');
 
-      return res.send(token);
+      res.send(token);
     });
   })(req, res, next);
 });

@@ -35,6 +35,10 @@ function Signin() {
           localStorage.setItem('@isLogin', res.data);
           window.location.reload();
         }
+      })
+      .catch((err) => {
+        const errMsg = err.response?.data
+        alert(errMsg)
       });
   }
 
