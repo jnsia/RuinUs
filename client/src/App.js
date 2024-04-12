@@ -22,13 +22,13 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div class="App bg-dark">
+      <div className="App bg-dark">
         {token ? (
           <Routes>
             <Route exact path="/" element={<Home />}></Route>
             <Route path="/write" element={<Write />}></Route>
-            <Route path="/rewrite" element={<Rewrite />}></Route>
-            <Route path="/post" element={<Post />}></Route>
+            <Route path="/rewrite/:postId" element={<Rewrite />}></Route>
+            <Route path="/post/:postId" element={<Post />}></Route>
             <Route path="*" element={<Error />}></Route>
           </Routes>
         ) : (

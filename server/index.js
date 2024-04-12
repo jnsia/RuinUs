@@ -11,7 +11,6 @@ const cors = require('cors');
 
 const indexRouter = require('./routes');
 const authRouter = require('./routes/auth');
-const userRouter = require('./routes/user');
 const contentRouter = require('./routes/content');
 
 const { sequelize } = require('./models');
@@ -53,7 +52,6 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
-app.use('/user', userRouter);
 app.use('/content', contentRouter);
 
 app.listen(app.get('port'), () => {

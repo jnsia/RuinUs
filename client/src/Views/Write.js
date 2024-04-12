@@ -1,55 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import SetTime from './SetTime';
+import React, { useEffect, useState } from "react";
+import SetTime from "./SetTime";
+import axios from 'axios'
 
-let causeSelect = [];
-let sortSelect = [];
+const causeType = ['사랑', '직장', '취업', '인간관계', '사업', '건강', '학업', '기타'];
+const sortType = ['슬픔', '질투', '분노', '서러움', '괴로움', '외로움', '억울함', '기타'];
+const reserveTimes = {
+  "삭제하지 않음": 60 * 24 * 365 * 39,
+  "10분 후": 10,
+  "1시간 후": 60,
+  "1일 후": 60 * 24,
+  "일주일 후": 60 * 24 * 7,
+  "한 달 후": 60 * 24 * 30,
+  "1년 후": 60 * 24 * 365,
+}
 
-function Write(props) {
+function Write() {
   const [step, setStep] = useState(1);
-  const [title, setTitle] = useState('');
-  const [text, setText] = useState('');
+  const [title, setTitle] = useState("");
+  const [text, setText] = useState("");
 
   const [cause, setCause] = useState([]);
-  const [causeButton, setCauseButton] = useState({
-    사랑: false,
-    직장: false,
-    취업: false,
-    인간관계: false,
-    사업: false,
-    건강: false,
-    학업: false,
-    기타: false,
-  });
-
   const [sort, setSort] = useState([]);
-  const [sortButton, setSortButton] = useState({
-    슬픔: false,
-    질투: false,
-    분노: false,
-    서러움: false,
-    괴로움: false,
-    외로움: false,
-    억울함: false,
-    기타: false,
-  });
 
   const [modalShow, setModalShow] = useState(false);
   const [custom, setCustom] = useState();
 
-  const [reserve, setReserve] = useState('');
-  const [reserveButton, setReserveButton] = useState({
-    '삭제하지 않음': false,
-    '10분 후': false,
-    '1시간 후': false,
-    '1일 후': false,
-    '일주일 후': false,
-    '한 달 후': false,
-    '1년 후': false,
-    직접입력: false,
-  });
+  const [reserve, setReserve] = useState("");
+  const [selectedReserve, setSelectedReserve] = useState("");
 
   const goHome = () => {
-    document.location.href = '/';
+    document.location.href = "/";
   };
 
   function prevStep() {
@@ -60,73 +40,71 @@ function Write(props) {
     setStep(step + 1);
   }
 
-  const savePost = () => {};
+  const savePost = async () => {
+    const token = localStorage.getItem("@isLogin");
+
+    axios.post(`http://localhost:8080/content/${token}`, {
+      title,
+      texts: text,
+      cause,
+      sort,
+      reserve,
+    })
+    .then((res) => {
+      goHome();
+    })
+    .catch((err) => console.log(err))
+  };
 
   const autoResizeTextarea = () => {
-    let texts = document.querySelector('#input-text');
+    let texts = document.querySelector("#input-text");
 
     if (texts) {
-      texts.style.height = 'auto';
+      texts.style.height = "auto";
       let height = texts.scrollHeight;
       texts.style.height = `${height}px`;
     }
   };
 
   const causeButtonClick = (button) => {
-    if (causeSelect.includes(button)) {
-      causeSelect.pop(button);
+    if (cause.includes(button)) {
+      cause.pop(button);
     } else {
-      if (causeSelect.length === 3) {
-        alert('최대 3개만 선택할 수 있습니다.');
+      if (cause.length === 3) {
+        alert("최대 3개만 선택할 수 있습니다.");
         return false;
       }
-
-      causeSelect.push(button);
+      cause.push(button);
     }
-
-    setCauseButton((prevState) => ({
-      ...prevState,
-      [button]: !prevState[button],
-    }));
-
-    setCause(causeSelect);
-    console.log(cause);
+    setCause([...cause]);
   };
 
   const sortButtonClick = (button) => {
-    if (sortSelect.includes(button)) {
-      sortSelect.pop(button);
+    if (sort.includes(button)) {
+      sort.pop(button);
     } else {
-      if (sortSelect.length === 3) {
-        alert('최대 3개만 선택할 수 있습니다.');
+      if (sort.length === 3) {
+        alert("최대 3개만 선택할 수 있습니다.");
         return false;
       }
-
-      sortSelect.push(button);
+      sort.push(button);
     }
-
-    setSortButton((prevState) => ({
-      ...prevState,
-      [button]: !prevState[button],
-    }));
-
-    setSort(sortSelect);
-    console.log(sort);
+    setSort([...sort]);
   };
 
   const reserveButtonClick = (button) => {
-    if (button === '직접입력') {
+    if (button === "직접입력") {
       setModalShow(true);
     }
 
     setReserveButton(() => ({
-      '삭제하지 않음': false,
-      '10분 후': false,
-      '1시간 후': false,
-      '1일 후': false,
-      '일주일 후': false,
-      '한 달 후': false,
-      '1년 후': false,
+      "삭제하지 않음": false,
+      "10분 후": false,
+      "1시간 후": false,
+      "1일 후": false,
+      "일주일 후": false,
+      "한 달 후": false,
+      "1년 후": false,
       직접입력: false,
 
       // 밑의 반복문 써보기
@@ -140,7 +118,7 @@ function Write(props) {
       [button]: !reserveButton[button],
     }));
 
-    if (button === '직접입력') {
+    if (button === "직접입력") {
       setReserve(custom);
       console.log(custom);
     } else {
@@ -166,8 +144,8 @@ function Write(props) {
             Ruin Us
           </div>
           {step === 4 ? (
-            <button type="button" class="btn btn-dark m-2" onClick={nextStep}>
-              다음
+            <button type="button" class="btn btn-dark m-2" onClick={savePost}>
+              저장
             </button>
           ) : (
             <button type="button" class="btn btn-dark m-2" onClick={nextStep}>
@@ -209,19 +187,21 @@ function Write(props) {
       )}
       {step === 2 && (
         <div class="container bg-dark">
-          <div class="m-4 p-2 fs-6 text-center text-white">감정의 원인은 무엇이었나요?</div>
+          <div class="m-4 p-2 fs-6 text-center text-white">
+            감정의 원인은 무엇이었나요?
+          </div>
           <div class="row justify-content-center m-2">
-            {Object.keys(causeButton).map((button) => (
+          {causeType.map((type) => (
               <button
-                key={button}
+                key={type}
                 className={
-                  causeButton[button]
-                    ? 'col-4 btn btn-secondary m-2 p-2 active'
-                    : 'col-4 btn btn-secondary m-2 p-2'
+                  cause.includes(type)
+                    ? "col-4 btn btn-secondary m-2 p-2 active"
+                    : "col-4 btn btn-secondary m-2 p-2"
                 }
-                onClick={() => causeButtonClick(button)}
+                onClick={() => causeButtonClick(type)}
               >
-                {button}
+                {type}
               </button>
             ))}
           </div>
@@ -229,19 +209,21 @@ function Write(props) {
       )}
       {step === 3 && (
         <div class="container bg-dark">
-          <div class="m-4 p-2 fs-6 text-center text-white">감정을 분류해 보세요.</div>
+          <div class="m-4 p-2 fs-6 text-center text-white">
+            감정을 분류해 보세요.
+          </div>
           <div class="row justify-content-center m-2">
-            {Object.keys(sortButton).map((button) => (
+          {sortType.map((type) => (
               <button
-                key={button}
+                key={type}
                 className={
-                  sortButton[button]
-                    ? 'col-4 btn btn-secondary m-2 p-2 active'
-                    : 'col-4 btn btn-secondary m-2 p-2'
+                  sort.includes(type)
+                    ? "col-4 btn btn-secondary m-2 p-2 active"
+                    : "col-4 btn btn-secondary m-2 p-2"
                 }
-                onClick={() => sortButtonClick(button)}
+                onClick={() => sortButtonClick(type)}
               >
-                {button}
+                {type}
               </button>
             ))}
           </div>
@@ -254,18 +236,21 @@ function Write(props) {
             <br />
             <div>언제 삭제할까요?</div>
           </div>
-          <div class="row justify-content-center m-2 mb-0 p-2" id="reserve-btns">
+          <div
+            class="row justify-content-center m-2 mb-0 p-2"
+            id="reserve-btns"
+          >
             {Object.keys(reserveButton).map((button) => (
               <button
                 key={button}
                 className={
                   reserveButton[button]
-                    ? 'col-10 col-md-8 btn btn-secondary m-2 p-2 active'
-                    : 'col-10 col-md-8 btn btn-secondary m-2 p-2'
+                    ? "col-10 col-md-8 btn btn-secondary m-2 p-2 active"
+                    : "col-10 col-md-8 btn btn-secondary m-2 p-2"
                 }
                 onClick={() => reserveButtonClick(button)}
               >
-                {button === '직접입력' ? custom || button : button}
+                {button === "직접입력" ? custom || button : button}
               </button>
             ))}
             <SetTime

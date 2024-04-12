@@ -1,50 +1,71 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 function Post() {
-  function rewrite() {
-    const title = document.querySelector('#postTitle').innerHTML;
-    const content = document.querySelector('#postContent').innerHTML;
+  const [data, setData] = useState(null);
+  const { postId } = useParams();
 
-    console.log(title);
-    console.log(content);
-  }
+  const prevStep = () => {
+    document.location.href = "/";
+  };
+
+  const nextStep = () => {
+    document.location.href = `/rewrite/${postId}`;
+  };
+
+  const fetchData = async () => {
+    const token = localStorage.getItem("@isLogin");
+    const res = await axios.get(
+      `http://localhost:8080/content/${postId}/${token}`
+    );
+    setData(res.data);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div>
-      <nav class="navbar bg-light">
-        <div class="container-fluid">
-          <button type="button" class="btn btn-dark m-2" onClick={prevStep}>
+      <nav className="navbar bg-light">
+        <div className="container-fluid">
+          <button type="button" className="btn btn-dark m-2" onClick={prevStep}>
             이전
           </button>
           <div className="navbar-brand" href="#">
             Ruin Us
           </div>
-          <button type="button" class="btn btn-dark m-2" onClick={nextStep}>
-            다음
+          <button type="button" className="btn btn-dark m-2" onClick={nextStep}>
+            수정
           </button>
         </div>
       </nav>
-      <div class="container bg-dark">
-        <div class="row justify-content-center p-4">
-          <div id="writeRegion" class="col-lg-8 col-md-10 col-sm-12 bg-light p-4">
-            <div id="postTitle" class="p-2">
-              임시 제목
+      {data &&
+      <div className="container bg-dark">
+        <div className="row justify-content-center p-4">
+          <div
+            id="writeRegion"
+            className="col-lg-8 col-md-10 col-sm-12 bg-light p-4"
+          >
+            <div id="postTitle" className="p-2">
+              {data.title}
             </div>
             <hr />
-            <div class="p-2 text-muted">#슬픔 #나두 #잠와 #졸려요 #힝... #어디?까지</div>
-            <div id="postContent" class="p-2">
-              안녕하세여... 저는 준수이에이오
-              <br />
-              테스용 셋ㅇ이 왜 이래
-              <br />
-              imepsdmvji dkanrjsk tmqslek!
+            <div className="p-2 text-muted">
+              {data.hashtags.map((hashtag) => (
+                hashtag && <span>#{hashtag} </span>
+              ))}
+            </div>
+            <div id="postContent" className="p-2">
+              {data.texts.split('\n').map((text) => (
+                <p>{text}</p>
+              ))}
             </div>
           </div>
-          <button class="btn m-2 col-6 btn-sm btn-outline-light" onClick={rewrite}>
-            임시 수정 버튼
-          </button>
         </div>
       </div>
+      }
     </div>
   );
 }

@@ -8,16 +8,16 @@ import { ko } from 'date-fns/esm/locale';
 function SetTime(props) {
   const [date, setDate] = useState(new Date());
 
+  const timestamp = (datetime) => {
+    datetime.setHours(datetime.getHours() + 9);
+    return datetime.toISOString().replace('T', ' ').substring(0, 16);
+  }
+
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button class="m-2 p-2 btn btn-secondary" onClick={onClick} ref={ref}>
       {value}
     </button>
   ));
-
-  let datetime = date;
-
-  // console.log(date);
-  // console.log(datetime);
 
   return (
     <Modal {...props} size="sm" aria-labelledby="contained-modal-title-vcenter" centered>
@@ -34,12 +34,12 @@ function SetTime(props) {
           }}
           placeholderText="나를 클릭하세요."
           locale={ko}
-          dateFormat="yy년 MM월 dd일 aa h:mm"
+          dateFormat="yy년 MM월 dd일 (eee) hh:mm"
           minDate={new Date()}
           withPortal
           showTimeSelect
           timeIntervals={30}
-          timeCaption="Time"
+          timeCaption="시간"
           customInput={<ExampleCustomInput />}
         />
       </Modal.Body>
@@ -50,7 +50,7 @@ function SetTime(props) {
         <button
           type="button"
           class="btn btn-dark my-2 btn-sm"
-          datetime={datetime}
+          datetime={timestamp(date)}
           onClick={props.onChange}
         >
           저장하기

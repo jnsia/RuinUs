@@ -6,11 +6,11 @@ module.exports = class Content extends Sequelize.Model {
       {
         title: {
           type: Sequelize.STRING(50),
-          allowNull: true, // NOT NULL
+          allowNull: false, // NOT NULL
         },
         texts: {
-          type: Sequelize.STRING(100),
-          allowNull: true,
+          type: Sequelize.TEXT('long'),
+          allowNull: false,
         },
         cause: {
           type: Sequelize.STRING(100),
@@ -22,11 +22,11 @@ module.exports = class Content extends Sequelize.Model {
         },
         reserve: {
           type: Sequelize.DATE,
-          allowNull: true,
+          allowNull: false,
         },
         createdAt: {
           type: Sequelize.DATE, // DATETIME
-          allowNull: true,
+          allowNull: false,
           defaultValue: sequelize.NOW,
         },
       },
@@ -34,7 +34,7 @@ module.exports = class Content extends Sequelize.Model {
         sequelize,
         timetamps: true,
         underscored: false,
-        paranoid: true,
+        paranoid: false,
         modelName: 'Content',
         tableName: 'contents',
         charset: 'utf8',

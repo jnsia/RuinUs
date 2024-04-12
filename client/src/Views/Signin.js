@@ -42,6 +42,12 @@ function Signin() {
       });
   }
 
+  const handleKeyUp = (e) => {
+    if (e.key == 'Enter') {
+      login()
+    }
+  }
+
   return (
     <div class="bg-light text-center col-12 col-md-8 col-lg-4 position-absolute top-50 start-50 translate-middle">
       <div class="my-4 pt-2 bg-light">
@@ -64,6 +70,7 @@ function Signin() {
               class="form-control"
               name="userID"
               onChange={(e) => setUserID(e.target.value)}
+              onKeyUp={(e) => handleKeyUp(e)}
             />
           </div>
         </div>
@@ -77,6 +84,7 @@ function Signin() {
               class="form-control"
               name="userPW"
               onChange={(e) => setUserPW(e.target.value)}
+              onKeyUp={(e) => handleKeyUp(e)}
             />
           </div>
         </div>

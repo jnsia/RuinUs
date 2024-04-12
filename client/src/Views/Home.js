@@ -11,15 +11,14 @@ function Home() {
     document.location.href = `/Write`;
   }
 
-  useEffect(() => {
-    async function fetchData() { 
-      const token = localStorage.getItem("@isLogin")
-      const res = await axios.get(`http://localhost:8080/home/${token}`)
-    
-      setData(res.data)
-      console.log(res.data)
-    }
+  const fetchData = async () => { 
+    const token = localStorage.getItem("@isLogin")
+    const res = await axios.get(`http://localhost:8080/content/${token}`)
+    setData(res.data)
+    console.log(res.data)
+  }
 
+  useEffect(() => {
     fetchData()
   }, [])
 
@@ -43,10 +42,10 @@ function Home() {
       <div class="container">
         <div class="row justify-content-center">
           <div class="bg-dark col-lg-8 col-md-10 col-sm-12">
-            {data.map((contents, index) => (
-              <Title key={index} title={contents.title} tag={contents.tag} time={contents.time} />
+            {data.map((content) => (
+              <Title key={content.id} content={content} />
             ))}
-            {data.length === 0 && (<p className='text-white'>없어요</p>)}
+            {data.length === 0 && (<p className='text-white text-center mt-4'>작성된 글이 없습니다.</p>)}
           </div>
         </div>
       </div>

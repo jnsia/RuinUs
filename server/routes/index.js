@@ -7,10 +7,10 @@ const router = express.Router();
 
 router.get('/home/:encodeToken', async (req, res) => {
   const encodeToken = req.params.encodeToken
-  const { id, iat } = jwt.verify(encodeToken, 'jwt-secret-key')
+  const { id } = jwt.verify(encodeToken, 'jwt-secret-key')
 
   try {
-    const posts = await Content.findAll({
+    const contents = await Content.findAll({
       include: {
         model: User,
         attributes: ['id'],
@@ -21,11 +21,13 @@ router.get('/home/:encodeToken', async (req, res) => {
       order: [['createdAt', 'DESC']],
     });
 
-    res.status(200).send(posts)
+    res.status(200).send(contents)
   } catch (err) {
     console.error(err);
     next(err);
   }
 });
+
+
 
 module.exports = router;

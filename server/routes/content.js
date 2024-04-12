@@ -1,23 +1,102 @@
 const express = require("express");
 const { User, Content } = require("../models");
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
-router.get("/", async (req, res, next) => {
-  return "content";
-});
+router.get("/:encodeToken", async (req, res, next) => {
+  const encodeToken = req.params.encodeToken;
+  const { id } = jwt.verify(encodeToken, "jwt-secret-key");
 
-router.get("/sort", async (req, res, next) => {
   try {
-    const content = await Content.findAll({
-      include: {
-        model: User,
-        attributes: ["id", "nickname"],
+    const contents = await Content.findAll({
+      where: {
+        writer: id,
       },
       order: [["createdAt", "DESC"]],
     });
+
+    res.status(200).send(contents);
   } catch (err) {
-    console.error(err);
+    next(err);
+  }
+});
+
+router.post("/:encodeToken", async (req, res, next) => {
+  const encodeToken = req.params.encodeToken;
+  const { id } = jwt.verify(encodeToken, "jwt-secret-key");
+
+  const { title, texts, cause, sort, reserve } = req.body;
+
+  const causeStr = cause.join(",");
+  const sortStr = sort.join(",");
+
+  const content = {
+    writer: id,
+    title,
+    texts,
+    cause: causeStr,
+    sort: sortStr,
+    reserve: Date.now(),
+  };
+
+  try {
+    await Content.create(content);
+    res.status(200).send({ message: "Success" })
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/:postId/:encodeToken", async (req, res, next) => {
+  const { postId, encodeToken } = req.params;
+  const { id } = jwt.verify(encodeToken, "jwt-secret-key");
+
+  try {
+    const content = await Content.findOne({
+      where: {
+        id: postId,
+      },
+    });
+
+    let hashtags = [...content.cause.split(','), ...content.sort.split(',')]
+
+    const response = {
+      id: content.id,
+      title: content.title,
+      texts: content.texts,
+      hashtags,
+      reserve: content.reserve
+    }
+
+    res.status(200).send(response);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/rewrite/:postId/:encodeToken", async (req, res, next) => {
+  const { postId, encodeToken } = req.params;
+  const { id } = jwt.verify(encodeToken, "jwt-secret-key");
+
+  try {
+    const content = await Content.findOne({
+      where: {
+        id: postId,
+      },
+    });
+
+    const response = {
+      id: content.id,
+      title: content.title,
+      texts: content.texts,
+      cause: content.cause.split(','),
+      sort: content.sort.split(','),
+      reserve: content.reserve
+    }
+
+    res.status(200).send(response);
+  } catch (err) {
     next(err);
   }
 });
