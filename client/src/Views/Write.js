@@ -92,38 +92,17 @@ function Write() {
     setSort([...sort]);
   };
 
-  const reserveButtonClick = (button) => {
-    if (button === "직접입력") {
+  const reserveButtonClick = (time) => {
+    if (time === "직접입력") {
       setModalShow(true);
     }
 
-    setReserveButton(() => ({
-      "삭제하지 않음": false,
-      "10분 후": false,
-      "1시간 후": false,
-      "1일 후": false,
-      "일주일 후": false,
-      "한 달 후": false,
-      "1년 후": false,
-      직접입력: false,
-
-      // 밑의 반복문 써보기
-
-      // for (let key in obj) {
-      //   if (obj.hasOwnProperty(key)) {
-      //     obj[key] = false;
-      //   }
-      // }
-
-      [button]: !reserveButton[button],
-    }));
-
-    if (button === "직접입력") {
+    if (time === "직접입력") {
       setReserve(custom);
       console.log(custom);
     } else {
-      setReserve(button);
-      console.log(button);
+      setReserve(time);
+      console.log(time);
     }
   };
 
@@ -240,17 +219,17 @@ function Write() {
             class="row justify-content-center m-2 mb-0 p-2"
             id="reserve-btns"
           >
-            {Object.keys(reserveButton).map((button) => (
+            {Object.keys(reserveTimes).map((time) => (
               <button
-                key={button}
+                key={time}
                 className={
-                  reserveButton[button]
+                  reserve == time
                     ? "col-10 col-md-8 btn btn-secondary m-2 p-2 active"
                     : "col-10 col-md-8 btn btn-secondary m-2 p-2"
                 }
-                onClick={() => reserveButtonClick(button)}
+                onClick={() => reserveButtonClick(time)}
               >
-                {button === "직접입력" ? custom || button : button}
+                {time === "직접입력" ? custom || time : time}
               </button>
             ))}
             <SetTime
