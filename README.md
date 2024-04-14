@@ -1,4 +1,4 @@
-# Weak? End. We Can Do!
+# Ruin Us
 
 ## 프로젝트 실행
 
