@@ -60,6 +60,8 @@ Django와 Spring Boot와 같은 Framework를 경험한 후에
 
 - React 18.2.0
 - NodeJS 18.12.1
+- express 4.18.2
+- MySQL 8.0
 
 ## 프로젝트하며 느낀 점
 
