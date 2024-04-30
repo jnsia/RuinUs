@@ -59,7 +59,7 @@ function Post() {
             </div>
             <div id="postContent" className="p-2">
               {data.texts.split('\n').map((text) => (
-                <p>{text}</p>
+                text ? <div>{text}</div> : <br/>
               ))}
             </div>
           </div>
