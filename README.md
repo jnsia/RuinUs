@@ -53,7 +53,7 @@ npm run start
 2022.10 ~ 2022.11 (6주)
 
 ### 백엔드
-2024.04 ~ 2024.04 (2주)
+2024.04 ~ 2024.05 (3주)
 
 HTTP 통신규약과 RESTful API에 대한 개념에 대한 학습을 하였으며,
 Django와 Spring Boot와 같은 Framework를 경험한 후에
