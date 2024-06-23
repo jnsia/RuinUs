@@ -1,9 +1,27 @@
 import React, { useEffect, useState } from "react";
 import SetTime from "./SetTime";
-import axios from 'axios'
+import axios from "axios";
 
-const causeType = ['사랑', '직장', '취업', '인간관계', '사업', '건강', '학업', '기타'];
-const sortType = ['슬픔', '질투', '분노', '서러움', '괴로움', '외로움', '억울함', '기타'];
+const causeType = [
+  "사랑",
+  "직장",
+  "취업",
+  "인간관계",
+  "사업",
+  "건강",
+  "학업",
+  "기타",
+];
+const sortType = [
+  "슬픔",
+  "질투",
+  "분노",
+  "서러움",
+  "괴로움",
+  "외로움",
+  "억울함",
+  "기타",
+];
 const reserveTimes = {
   "삭제하지 않음": 60 * 24 * 365 * 39,
   "10분 후": 10,
@@ -12,7 +30,8 @@ const reserveTimes = {
   "일주일 후": 60 * 24 * 7,
   "한 달 후": 60 * 24 * 30,
   "1년 후": 60 * 24 * 365,
-}
+  직접입력: 0,
+};
 
 function Write() {
   const [step, setStep] = useState(1);
@@ -26,7 +45,7 @@ function Write() {
   const [custom, setCustom] = useState();
 
   const [reserve, setReserve] = useState("");
-  const [selectedReserve, setSelectedReserve] = useState("");
+  const [reserveTime, setReserveTime] = useState(new Date());
 
   const goHome = () => {
     document.location.href = "/";
@@ -37,23 +56,29 @@ function Write() {
   }
 
   function nextStep() {
+    if (title === '') {
+      alert('제목을 입력해주세요.')
+      return;
+    }
+
     setStep(step + 1);
   }
 
   const savePost = async () => {
     const token = localStorage.getItem("@isLogin");
 
-    axios.post(`http://localhost:8080/content/${token}`, {
-      title,
-      texts: text,
-      cause,
-      sort,
-      reserve,
-    })
-    .then((res) => {
-      goHome();
-    })
-    .catch((err) => console.log(err))
+    axios
+      .post(`http://localhost:8080/content/${token}`, {
+        title,
+        texts: text,
+        cause,
+        sort,
+        reserve: reserveTime,
+      })
+      .then((res) => {
+        goHome();
+      })
+      .catch((err) => console.log(err));
   };
 
   const autoResizeTextarea = () => {
@@ -68,42 +93,45 @@ function Write() {
 
   const causeButtonClick = (button) => {
     if (cause.includes(button)) {
-      cause.pop(button);
+      const newCause = cause.filter((item) => item !== button);
+      setCause(newCause);
     } else {
       if (cause.length === 3) {
         alert("최대 3개만 선택할 수 있습니다.");
         return false;
       }
       cause.push(button);
+      setCause([...cause]);
     }
-    setCause([...cause]);
   };
 
   const sortButtonClick = (button) => {
     if (sort.includes(button)) {
-      sort.pop(button);
+      const newSort = sort.filter((item) => item !== button);
+      setSort(newSort);
     } else {
       if (sort.length === 3) {
         alert("최대 3개만 선택할 수 있습니다.");
         return false;
       }
       sort.push(button);
+      setSort([...sort]);
     }
-    setSort([...sort]);
   };
 
   const reserveButtonClick = (time) => {
     if (time === "직접입력") {
       setModalShow(true);
+      return;
     }
 
-    if (time === "직접입력") {
-      setReserve(custom);
-      console.log(custom);
-    } else {
-      setReserve(time);
-      console.log(time);
-    }
+    const now = Date.now() + reserveTimes[time] * 60000;
+    let datetime = new Date(now);
+    datetime.setHours(datetime.getHours() + 9);
+    let result = datetime.toISOString().replace("T", " ").substring(0, 19);
+
+    setReserve(time);
+    setReserveTime(result);
   };
 
   return (
@@ -170,7 +198,7 @@ function Write() {
             감정의 원인은 무엇이었나요?
           </div>
           <div class="row justify-content-center m-2">
-          {causeType.map((type) => (
+            {causeType.map((type) => (
               <button
                 key={type}
                 className={
@@ -192,7 +220,7 @@ function Write() {
             감정을 분류해 보세요.
           </div>
           <div class="row justify-content-center m-2">
-          {sortType.map((type) => (
+            {sortType.map((type) => (
               <button
                 key={type}
                 className={
@@ -238,8 +266,17 @@ function Write() {
               onChange={(e) => {
                 const customDate = e.target.attributes.datetime.value;
 
+                let datetime = new Date(customDate);
+                datetime.setHours(datetime.getHours() + 9);
+                let result = datetime
+                  .toISOString()
+                  .replace("T", " ")
+                  .substring(0, 19);
+
                 setModalShow(false);
-                setCustom(customDate);
+                setCustom(result.substring(2, 16));
+                setReserve("직접입력");
+                setReserveTime(result);
               }}
             />
           </div>

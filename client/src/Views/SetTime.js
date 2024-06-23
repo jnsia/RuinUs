@@ -8,13 +8,8 @@ import { ko } from 'date-fns/esm/locale';
 function SetTime(props) {
   const [date, setDate] = useState(new Date());
 
-  const timestamp = (datetime) => {
-    datetime.setHours(datetime.getHours() + 9);
-    return datetime.toISOString().replace('T', ' ').substring(0, 16);
-  }
-
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-    <button class="m-2 p-2 btn btn-secondary" onClick={onClick} ref={ref}>
+    <button className="m-2 p-2 btn btn-secondary" onClick={onClick} ref={ref}>
       {value}
     </button>
   ));
@@ -22,11 +17,11 @@ function SetTime(props) {
   return (
     <Modal {...props} size="sm" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter" class="fs-6 px-2">
+        <Modal.Title id="contained-modal-title-vcenter" className="fs-6 px-2">
           삭제 시간 설정
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body class="d-flex flex-column justify-content-center align-items-center bg-dark p-2">
+      <Modal.Body className="d-flex flex-column justify-content-center align-items-center bg-dark p-2">
         <Datepicker
           selected={date}
           onChange={(datetime) => {
@@ -43,14 +38,14 @@ function SetTime(props) {
           customInput={<ExampleCustomInput />}
         />
       </Modal.Body>
-      <Modal.Footer class="d-flex mx-2 px-2 justify-content-between">
-        <button type="button" class="btn btn-dark my-2 btn-sm" onClick={props.onHide}>
+      <Modal.Footer className="d-flex mx-2 px-2 justify-content-between">
+        <button type="button" className="btn btn-dark my-2 btn-sm" onClick={props.onHide}>
           돌아가기
         </button>
         <button
           type="button"
-          class="btn btn-dark my-2 btn-sm"
-          datetime={timestamp(date)}
+          className="btn btn-dark my-2 btn-sm"
+          datetime={date}
           onClick={props.onChange}
         >
           저장하기

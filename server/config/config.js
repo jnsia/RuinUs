@@ -4,4 +4,5 @@ module.exports = {
   username: process.env.MYSQL_USERNAME || 'test',
   password: process.env.MYSQL_PASSWORD || 'test',
   dialect: 'mysql',
+  timezone: '+09:00',
 }

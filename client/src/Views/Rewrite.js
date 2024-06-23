@@ -13,6 +13,7 @@ const reserveTimes = {
   "일주일 후": 60 * 24 * 7,
   "한 달 후": 60 * 24 * 30,
   "1년 후": 60 * 24 * 365,
+  직접입력: 0,
 }
 
 function Rewrite() {
@@ -29,7 +30,7 @@ function Rewrite() {
   const [custom, setCustom] = useState();
 
   const [reserve, setReserve] = useState("");
-  const [selectedReserve, setSelectedReserve] = useState("");
+  const [reserveTime, setReserveTime] = useState(new Date());
 
   const goHome = () => {
     document.location.href = "/";
@@ -40,6 +41,11 @@ function Rewrite() {
   }
 
   function nextStep() {
+    if (title === '') {
+      alert('제목을 입력해주세요.')
+      return;
+    }
+
     setStep(step + 1);
   }
 
@@ -51,10 +57,9 @@ function Rewrite() {
         texts: text,
         cause,
         sort,
-        reserve,
+        reserve: reserveTime,
       })
       .then((res) => {
-        console.log(res);
         document.location.href = `/post/${postId}`;
       })
       .catch((err) => console.log(err));
@@ -72,42 +77,45 @@ function Rewrite() {
 
   const causeButtonClick = (button) => {
     if (cause.includes(button)) {
-      cause.pop(button);
+      const newCause = cause.filter((item) => item !== button);
+      setCause(newCause);
     } else {
       if (cause.length === 3) {
         alert("최대 3개만 선택할 수 있습니다.");
         return false;
       }
       cause.push(button);
+      setCause([...cause]);
     }
-    setCause([...cause]);
   };
 
   const sortButtonClick = (button) => {
     if (sort.includes(button)) {
-      sort.pop(button);
+      const newSort = sort.filter((item) => item !== button);
+      setSort(newSort);
     } else {
       if (sort.length === 3) {
         alert("최대 3개만 선택할 수 있습니다.");
         return false;
       }
       sort.push(button);
+      setSort([...sort]);
     }
-    setSort([...sort]);
   };
 
   const reserveButtonClick = (time) => {
     if (time === "직접입력") {
       setModalShow(true);
+      return;
     }
 
-    if (time === "직접입력") {
-      setReserve(custom);
-      console.log(custom);
-    } else {
-      setReserve(time);
-      console.log(time);
-    }
+    const now = Date.now() + reserveTimes[time] * 60000;
+    let datetime = new Date(now);
+    datetime.setHours(datetime.getHours() + 9);
+    let result = datetime.toISOString().replace("T", " ").substring(0, 19);
+
+    setReserve(time);
+    setReserveTime(result);
   };
 
   const fetchData = async () => {
@@ -122,7 +130,9 @@ function Rewrite() {
     setText(texts);
     setCause(cause);
     setSort(sort);
-    setReserve(reserve);
+    setReserve("직접입력");
+    setCustom(reserve.substring(2, 16).replace('T', ' '));
+    setReserveTime(reserve);
   };
 
   useEffect(() => {
@@ -260,11 +270,18 @@ function Rewrite() {
               onHide={() => setModalShow(false)}
               onChange={(e) => {
                 const customDate = e.target.attributes.datetime.value;
-                console.log(e.target)
-                console.log(new Date())
+
+                let datetime = new Date(customDate);
+                datetime.setHours(datetime.getHours() + 9);
+                let result = datetime
+                  .toISOString()
+                  .replace("T", " ")
+                  .substring(0, 19);
 
                 setModalShow(false);
-                setCustom(customDate);
+                setCustom(result.substring(2, 16));
+                setReserve("직접입력");
+                setReserveTime(result);
               }}
             />
           </div>

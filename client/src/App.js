@@ -18,7 +18,7 @@ function App() {
     if (storedToken !== token) {
       setToken(storedToken)
     }
-  }, [token])
+  }, [])
 
   return (
     <BrowserRouter>
@@ -42,4 +42,5 @@ function App() {
     </BrowserRouter>
   );
 }
+
 export default App;
