@@ -178,7 +178,7 @@ function Rewrite() {
             >
               <input
                 type="text"
-                class="form-control"
+                class="form-control fw-bold fs-5"
                 placeholder="제목"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -186,7 +186,7 @@ function Rewrite() {
               <hr />
               <textarea
                 id="input-text"
-                class="form-control fs-6"
+                class="form-control fs-5"
                 rows="1"
                 onKeyUp={autoResizeTextarea}
                 value={text}

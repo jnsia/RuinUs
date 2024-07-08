@@ -4,6 +4,7 @@ import axios from "axios";
 
 function Post() {
   const [data, setData] = useState(null);
+  const [deleteDate, setDeleteDate] = useState("")
   const { postId } = useParams();
 
   const prevStep = () => {
@@ -20,6 +21,13 @@ function Post() {
       `http://localhost:8080/content/${postId}/${token}`
     );
     setData(res.data);
+
+    const reserve = res.data.reserve
+    
+    let datetime = new Date(reserve)
+    datetime.setHours(datetime.getHours() + 9);
+    datetime = datetime.toISOString().replace("T", " ").substring(0, 16)
+    setDeleteDate(datetime);
   };
 
   useEffect(() => {
@@ -41,31 +49,34 @@ function Post() {
           </button>
         </div>
       </nav>
-      {data &&
-      <div className="container bg-dark">
-        <div className="row justify-content-center p-4">
-          <div
-            id="writeRegion"
-            className="col-lg-8 col-md-10 col-sm-12 bg-light p-4"
-          >
-            <div id="postTitle" className="p-2">
-              {data.title}
-            </div>
-            <hr />
-            <div className="p-2 text-muted">
-              {data.hashtags.map((hashtag) => (
-                hashtag && <span>#{hashtag} </span>
-              ))}
-            </div>
-            <div id="postContent" className="p-2">
-              {data.texts.split('\n').map((text) => (
-                text ? <div>{text}</div> : <br/>
-              ))}
+      {data && (
+        <div className="container bg-dark">
+          <div className="row justify-content-center p-4">
+            <div
+              id="writeRegion"
+              className="col-lg-8 col-md-10 col-sm-12 bg-light p-4"
+            >
+              <div id="postTitle" className="p-2 fw-bold fs-5">
+                {data.title}
+              </div>
+              <hr />
+              <div className="p-2 text-muted">
+                {data.hashtags.map(
+                  (hashtag) => hashtag && <span>#{hashtag} </span>
+                )}
+              </div>
+              <div id="postContent" className="p-2 fs-5">
+                {data.texts
+                  .split("\n")
+                  .map((text) => (text ? <div>{text}</div> : <br />))}
+              </div>
+              <div id="postInfo" className="p-2 fs-6 text-muted">
+                삭제일 : {deleteDate}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      }
+      )}
     </div>
   );
 }
