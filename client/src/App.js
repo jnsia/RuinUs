@@ -22,7 +22,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="App bg-dark">
+      <div className="App bg-dark w-100 h-100">
         {token ? (
           <Routes>
             <Route exact path="/" element={<Home />}></Route>

@@ -90,32 +90,6 @@ router.get("/:postId/:encodeToken", async (req, res, next) => {
   }
 });
 
-router.get("/rewrite/:postId/:encodeToken", async (req, res, next) => {
-  const { postId, encodeToken } = req.params;
-  const { id } = jwt.verify(encodeToken, "jwt-secret-key");
-
-  try {
-    const content = await Content.findOne({
-      where: {
-        id: postId,
-      },
-    });
-
-    const response = {
-      id: content.id,
-      title: content.title,
-      texts: content.texts,
-      cause: content.cause.split(","),
-      sort: content.sort.split(","),
-      reserve: content.reserve,
-    };
-
-    res.status(200).send(response);
-  } catch (err) {
-    next(err);
-  }
-});
-
 router.post("/rewrite/:postId/:encodeToken", async (req, res, next) => {
   const { postId, encodeToken } = req.params;
   const { id } = jwt.verify(encodeToken, "jwt-secret-key");

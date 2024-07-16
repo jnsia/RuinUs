@@ -1,32 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import Title from '../Components/Title';
-import Setting from './setting';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import Title from "../Components/Title";
+import Setting from "./Setting";
+import api from "../api/post-api";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const [modalShow, setModalShow] = useState(false);
   const [data, setData] = useState([]);
 
+  const navigate = useNavigate();
+
   function goWrite() {
-    document.location.href = `/Write`;
+    navigate({ pathname: `/Write` });
   }
 
-  const fetchData = async () => { 
-    const token = localStorage.getItem("@isLogin")
-    const res = await axios.get(`http://localhost:8080/content/${token}`)
-    setData(res.data)
-    console.log(res.data)
-  }
+  const fetchData = async () => {
+    api
+      .fetchPost()
+      .then((res) => setData(res.data))
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   return (
     <div>
       <nav class="navbar bg-light">
         <div class="container-fluid">
-          <button type="button" class="btn btn-dark m-2" onClick={() => setModalShow(true)}>
+          <button
+            type="button"
+            class="btn btn-dark m-2"
+            onClick={() => setModalShow(true)}
+          >
             설정
           </button>
           <div className="navbar-brand" href="#">
@@ -45,7 +52,11 @@ function Home() {
             {data.map((content) => (
               <Title key={content.id} content={content} />
             ))}
-            {data.length === 0 && (<p className='text-white text-center mt-4'>작성된 글이 없습니다.</p>)}
+            {data.length === 0 && (
+              <p className="text-white text-center mt-4">
+                작성된 글이 없습니다.
+              </p>
+            )}
           </div>
         </div>
       </div>

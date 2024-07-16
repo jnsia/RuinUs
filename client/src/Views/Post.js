@@ -1,33 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import api from "../api/post-api";
 
 function Post() {
   const [data, setData] = useState(null);
-  const [deleteDate, setDeleteDate] = useState("")
+  const [deleteDate, setDeleteDate] = useState("");
   const { postId } = useParams();
 
+  const navigate = useNavigate();
+
   const prevStep = () => {
-    document.location.href = "/";
+    navigate({pathname: '/'})
   };
 
   const nextStep = () => {
-    document.location.href = `/rewrite/${postId}`;
+    navigate({pathname: `/rewrite/${postId}`})
   };
 
   const fetchData = async () => {
-    const token = localStorage.getItem("@isLogin");
-    const res = await axios.get(
-      `http://localhost:8080/content/${postId}/${token}`
-    );
-    setData(res.data);
+    api
+      .fetchDetail(postId)
+      .then((res) => {
+        setData(res.data);
 
-    const reserve = res.data.reserve
-    
-    let datetime = new Date(reserve)
-    datetime.setHours(datetime.getHours() + 9);
-    datetime = datetime.toISOString().replace("T", " ").substring(0, 16)
-    setDeleteDate(datetime);
+        const reserve = res.data.reserve;
+
+        let datetime = new Date(reserve);
+        datetime.setHours(datetime.getHours() + 9);
+        datetime = datetime.toISOString().replace("T", " ").substring(0, 16);
+        setDeleteDate(datetime);
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
